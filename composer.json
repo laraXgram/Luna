@@ -1,0 +1,37 @@
+{
+    "name": "laraxgram/luna",
+    "type": "library",
+    "description": "Integrates Luna.js with LaraGram for building server-driven Telegram Mini Apps.",
+    "keywords": [
+        "laragram",
+        "luna",
+        "tma",
+        "inertia"
+    ],
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "LaraGram\\Luna\\": "src"
+        },
+        "files": [
+            "./helpers.php"
+        ]
+    },
+    "require": {
+        "php": "^8.2.0",
+        "ext-json": "*",
+        "laraxgram/core": "^4"
+    },
+    "suggest": {
+        "ext-pcntl": "Recommended when running the Inertia SSR server via the `inertia:start-ssr` artisan command."
+    },
+    "extra": {
+        "laragram": {
+            "providers": [
+                "LaraGram\\Luna\\ServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
