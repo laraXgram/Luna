@@ -7,7 +7,7 @@ class Header
     /**
      * The main Luna request header.
      */
-    public const INERTIA = 'X-Luna';
+    public const LUNA = 'X-Luna';
 
     /**
      * Header for specifying which error bag to use for validation errors.

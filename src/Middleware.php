@@ -134,13 +134,13 @@ class Middleware
         }
 
         $response = $next($request);
-        $response->headers->set('Vary', Header::INERTIA);
+        $response->headers->set('Vary', Header::LUNA);
 
         if ($isRedirect = $response->isRedirect()) {
             $this->reflash($request);
         }
 
-        if (! $request->header(Header::INERTIA)) {
+        if (! $request->header(Header::LUNA)) {
             return $response;
         }
 

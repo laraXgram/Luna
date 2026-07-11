@@ -202,8 +202,8 @@ class Response implements Responsable
             $this->resolvePreserveFragment($request),
         );
 
-        if ($request->header(Header::INERTIA)) {
-            return new JsonResponse($page, 200, [Header::INERTIA => 'true']);
+        if ($request->header(Header::LUNA)) {
+            return new JsonResponse($page, 200, [Header::LUNA => 'true']);
         }
 
         App::make(SsrState::class)->setPage($page);

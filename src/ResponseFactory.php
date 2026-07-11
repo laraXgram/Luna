@@ -14,7 +14,7 @@ use LaraGram\Support\Arr;
 use LaraGram\Support\Facades\App;
 use LaraGram\Support\Facades\Redirect;
 use LaraGram\Support\Facades\Request;
-use LaraGram\Support\Facades\Response;
+use LaraGram\Support\Facades\Response as BaseResponse;
 use LaraGram\Support\Traits\Macroable;
 use LaraGram\Luna\Ssr\DisablesSsr;
 use LaraGram\Luna\Ssr\ExcludesSsrPaths;
@@ -24,7 +24,7 @@ use LaraGram\Luna\Support\SessionKey;
 use InvalidArgumentException;
 use LogicException;
 use LaraGram\Http\BaseRedirectResponse as RedirectResponse;
-use LaraGram\Http\BaseResponse;
+use LaraGram\Http\BaseResponse as LaraGramBaseResponse;
 use UnitEnum;
 
 class ResponseFactory
@@ -385,10 +385,10 @@ class ResponseFactory
      *
      * @param  string|RedirectResponse  $url
      */
-    public function location($url): BaseResponse
+    public function location($url): LaraGramBaseResponse
     {
         if (Request::luna()) {
-            return Response::make('', 409, [Header::LOCATION => $url instanceof RedirectResponse ? $url->getTargetUrl() : $url]);
+            return BaseResponse::make('', 409, [Header::LOCATION => $url instanceof RedirectResponse ? $url->getTargetUrl() : $url]);
         }
 
         return $url instanceof RedirectResponse ? $url : Redirect::away($url);

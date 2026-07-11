@@ -144,7 +144,7 @@ class PropsResolver
         $this->component = $component;
 
         $this->isPartial = $request->header(Header::PARTIAL_COMPONENT) === $component;
-        $this->isLuna = (bool) $request->header(Header::INERTIA);
+        $this->isLuna = (bool) $request->header(Header::LUNA);
         $this->only = $this->parseHeader(Header::PARTIAL_ONLY);
         $this->except = $this->parseHeader(Header::PARTIAL_EXCEPT);
         $this->resetProps = $this->parseHeader(Header::RESET) ?? [];

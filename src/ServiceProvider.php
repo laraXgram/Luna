@@ -133,7 +133,7 @@ class ServiceProvider extends BaseServiceProvider
     protected function registerRequestMacro(): void
     {
         Request::macro('luna', function () {
-            return (bool) $this->header(Header::INERTIA);
+            return (bool) $this->header(Header::LUNA);
         });
     }
 
