@@ -58,4 +58,9 @@ class Header
      * Header specifying which once props to exclude from the response.
      */
     public const EXCEPT_ONCE_PROPS = 'X-Luna-Except-Once-Props';
+
+    /**
+     * Header carrying the Telegram Mini App init data for validation.
+     */
+    public const INIT_DATA = 'X-Telegram-Init-Data';
 }

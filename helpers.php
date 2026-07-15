@@ -4,6 +4,8 @@ use LaraGram\Contracts\Support\Arrayable;
 use LaraGram\Luna\Luna;
 use LaraGram\Luna\Response;
 use LaraGram\Luna\ResponseFactory;
+use LaraGram\Luna\Telegram\TelegramContext;
+use LaraGram\Luna\Telegram\WebAppUser;
 
 if (! function_exists('luna')) {
     /**
@@ -37,5 +39,29 @@ if (! function_exists('luna_location')) {
         $instance = Luna::getFacadeRoot();
 
         return $instance->location($url);
+    }
+}
+
+if (! function_exists('telegram')) {
+    /**
+     * Get the Telegram Mini App context for the current request.
+     *
+     * @return TelegramContext
+     */
+    function telegram()
+    {
+        return app(TelegramContext::class);
+    }
+}
+
+if (! function_exists('tg_user')) {
+    /**
+     * Get the validated Telegram Web App user for the current request.
+     *
+     * @return WebAppUser|null
+     */
+    function tg_user()
+    {
+        return app(TelegramContext::class)->user();
     }
 }

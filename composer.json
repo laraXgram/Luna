@@ -20,10 +20,11 @@
     "require": {
         "php": "^8.2.0",
         "ext-json": "*",
+        "ext-sodium": "*",
         "laraxgram/core": "^4"
     },
     "suggest": {
-        "ext-pcntl": "Recommended when running the Inertia SSR server via the `inertia:start-ssr` artisan command."
+        "ext-pcntl": "Recommended when running the Luna SSR server via the `luna:start-ssr` commander command."
     },
     "extra": {
         "laragram": {
