@@ -381,6 +381,18 @@ class ResponseFactory
     }
 
     /**
+     * Render a Luna page as a standalone HTML document (see Response::toHtml()).
+     *
+     * @param  BackedEnum|UnitEnum|string  $component
+     * @param  array<array-key, mixed>|Arrayable<array-key, mixed>|ProvidesLunaProperties  $props
+     * @param  array<string, mixed>  $viewData
+     */
+    public function renderToHtml($component, $props = [], ?string $rootView = null, array $viewData = [], ?HttpRequest $request = null): string
+    {
+        return $this->render($component, $props)->toHtml($request, $rootView, $viewData);
+    }
+
+    /**
      * Create an Luna location response.
      *
      * @param  string|RedirectResponse  $url

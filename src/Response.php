@@ -11,6 +11,7 @@ use LaraGram\Support\Facades\App;
 use LaraGram\Support\Facades\Response as ResponseFactory;
 use LaraGram\Support\Str;
 use LaraGram\Support\Traits\Macroable;
+use LaraGram\Luna\Ssr\Gateway;
 use LaraGram\Luna\Ssr\SsrState;
 use LaraGram\Luna\Support\Header;
 use LaraGram\Luna\Support\SessionKey;
@@ -185,10 +186,29 @@ class Response implements Responsable
      */
     public function toResponse($request)
     {
+        $page = $this->toPage($request);
+
+        if ($request->header(Header::LUNA)) {
+            return new JsonResponse($page, 200, [Header::LUNA => 'true']);
+        }
+
+        App::make(SsrState::class)->setPage($page);
+
+        return ResponseFactory::view($this->rootView, $this->viewData + ['page' => $page]);
+    }
+
+    /**
+     * Resolve the page object (component, props, url, version and metadata) for the request.
+     *
+     * @param  Request  $request
+     * @return array<string, mixed>
+     */
+    public function toPage($request): array
+    {
         $resolver = new PropsResolver($request, $this->component);
         [$resolvedProps, $resolvedMetadata] = $resolver->resolve($this->sharedProps, $this->props);
 
-        $page = array_merge(
+        return array_merge(
             [
                 'component' => $this->component,
                 'props' => $resolvedProps,
@@ -201,14 +221,29 @@ class Response implements Responsable
             $this->resolveFlashData($request),
             $this->resolvePreserveFragment($request),
         );
+    }
 
-        if ($request->header(Header::LUNA)) {
-            return new JsonResponse($page, 200, [Header::LUNA => 'true']);
-        }
+    /**
+     * Render the page as a standalone HTML document, outside of an HTTP response.
+     *
+     * Useful where HTML is embedded elsewhere (e.g. an MCP App resource). The root view
+     * receives "page" and "ssr" (the server-side rendered head and body, or null).
+     *
+     * @param  Request|null  $request
+     * @param  array<string, mixed>  $viewData
+     */
+    public function toHtml($request = null, ?string $rootView = null, array $viewData = []): string
+    {
+        $request ??= App::bound('http.request') ? App::make('http.request') : Request::create((string) config('app.url', '/'));
 
+        $page = $this->toPage($request);
+
+        App::forgetInstance(SsrState::class);
         App::make(SsrState::class)->setPage($page);
 
-        return ResponseFactory::view($this->rootView, $this->viewData + ['page' => $page]);
+        $ssr = App::make(Gateway::class)->dispatch($page, $request);
+
+        return (string) view($rootView ?? $this->rootView, $this->viewData + $viewData + ['page' => $page, 'ssr' => $ssr])->render();
     }
 
     /**
