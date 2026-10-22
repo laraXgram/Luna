@@ -98,7 +98,8 @@ class InitDataValidator
             throw InvalidInitDataException::missingBotToken();
         }
 
-        $dataCheckString = $this->dataCheckString($fields);
+        // The bot-token hash covers every field but itself, `signature` included.
+        $dataCheckString = $this->dataCheckString($fields, ['hash']);
 
         $secretKey = hash_hmac('sha256', $this->botToken, self::HMAC_KEY, true);
         $expected = hash_hmac('sha256', $dataCheckString, $secretKey);
@@ -126,7 +127,7 @@ class InitDataValidator
         }
 
         $botId = $this->botId();
-        $dataCheckString = $botId.':'.self::HMAC_KEY."\n".$this->dataCheckString($fields);
+        $dataCheckString = $botId.':'.self::HMAC_KEY."\n".$this->dataCheckString($fields, ['hash', 'signature']);
 
         $signature = $this->base64UrlDecode((string) $fields['signature']);
         $publicKey = @hex2bin($this->publicKey);
@@ -163,14 +164,19 @@ class InitDataValidator
     }
 
     /**
-     * Build the data-check-string: every field except `hash` and `signature`,
+     * Build the data-check-string: every field except the `$excluded` ones,
      * sorted by key, formatted as `key=value` and joined with line feeds.
      *
+     * Telegram signs differently for each scheme: the bot-token hash covers
+     * `signature` (only `hash` is left out), while the Ed25519 signature
+     * leaves out both `hash` and `signature`.
+     *
      * @param  array<string, string>  $fields
+     * @param  array<int, string>  $excluded
      */
-    protected function dataCheckString(array $fields): string
+    protected function dataCheckString(array $fields, array $excluded): string
     {
-        unset($fields['hash'], $fields['signature']);
+        $fields = array_diff_key($fields, array_flip($excluded));
 
         ksort($fields);
 

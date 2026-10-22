@@ -86,6 +86,10 @@ check('user id parsed', $initData->user?->id === 42);
 check('username parsed', $initData->user?->username === 'ada');
 check('query id parsed', $initData->queryId === 'AAHtest123');
 
+// 1b. Current clients add an Ed25519 `signature`; the bot-token hash covers it too.
+$signedRaw = signInitData($botToken, $fields + ['signature' => 'c2lnbmF0dXJlLWZyb20tdGVsZWdyYW0']);
+check('init data carrying a signature accepted', $validator->tryValidate($signedRaw) !== null);
+
 // 2. Tampered user field is rejected.
 $tampered = str_replace('%22id%22%3A42', '%22id%22%3A99', $raw);
 try {

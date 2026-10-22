@@ -13,7 +13,6 @@ use LaraGram\Routing\Router;
 use LaraGram\Support\Arr;
 use LaraGram\Support\Facades\App;
 use LaraGram\Support\Facades\Redirect;
-use LaraGram\Support\Facades\Request;
 use LaraGram\Support\Facades\Response as BaseResponse;
 use LaraGram\Support\Traits\Macroable;
 use LaraGram\Luna\Ssr\DisablesSsr;
@@ -399,7 +398,8 @@ class ResponseFactory
      */
     public function location($url): LaraGramBaseResponse
     {
-        if (Request::luna()) {
+        // request() is the HTTP request; the Request facade is the bot's update.
+        if (request()->luna()) {
             return BaseResponse::make('', 409, [Header::LOCATION => $url instanceof RedirectResponse ? $url->getTargetUrl() : $url]);
         }
 
