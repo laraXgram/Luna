@@ -18,10 +18,10 @@
         ]
     },
     "require": {
-        "php": "^8.2.0",
+        "php": "^8.3",
         "ext-json": "*",
         "ext-sodium": "*",
-        "laraxgram/core": "^4"
+        "laraxgram/core": "^4.5"
     },
     "suggest": {
         "ext-pcntl": "Recommended when running the Luna SSR server via the `luna:start-ssr` commander command."
