@@ -41,7 +41,9 @@ class StopSsr extends Command
 
         $this->info('Luna SSR server stopped.');
 
-        curl_close($ch);
+        if (PHP_VERSION_ID < 80000) {
+            curl_close($ch);
+        }
 
         return self::SUCCESS;
     }
